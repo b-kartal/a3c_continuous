@@ -26,8 +26,8 @@ class Agent(object):
         self.gpu_id = -1
 
     def action_train(self):
-        if self.args.model == 'CONV':
-            self.state = self.state.unsqueeze(0)
+
+        self.state = self.state.unsqueeze(0)
         value, mu, sigma, (self.hx, self.cx) = self.model(
             (Variable(self.state), (self.hx, self.cx)))
         mu = torch.clamp(mu, -1.0, 1.0)
@@ -79,8 +79,8 @@ class Agent(object):
             else:
                 self.cx = Variable(self.cx.data)
                 self.hx = Variable(self.hx.data)
-            if self.args.model == 'CONV':
-                self.state = self.state.unsqueeze(0)
+
+            self.state = self.state.unsqueeze(0)
             value, mu, sigma, (self.hx, self.cx) = self.model(
                 (Variable(self.state), (self.hx, self.cx)))
         mu = torch.clamp(mu.data, -1.0, 1.0)

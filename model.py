@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.init as init
 import torch.nn.functional as F
 from torch.autograd import Variable
-from utils import norm_col_init, weights_init, weights_init_mlp
+from utils import norm_col_init, weights_init
 
 
 class A3C_CONV(torch.nn.Module):

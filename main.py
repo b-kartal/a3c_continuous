@@ -5,7 +5,7 @@ import argparse
 import torch
 import torch.multiprocessing as mp
 from environment import create_env
-from model import A3C_MLP, A3C_CONV
+from model import A3C_CONV
 from train import train
 from test import test
 from shared_optim import SharedRMSprop, SharedAdam
@@ -95,11 +95,6 @@ parser.add_argument(
     default='logs/',
     metavar='LG',
     help='folder to save logs')
-parser.add_argument(
-    '--model',
-    default='MLP',
-    metavar='M',
-    help='Model type to use')
 parser.add_argument(
     '--stack-frames',
     type=int,
