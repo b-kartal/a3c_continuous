@@ -14,6 +14,8 @@ import gym
 def train(rank, args, shared_model, optimizer):
     ptitle('Training Agent: {}'.format(rank))
     gpu_id = args.gpu_ids[rank % len(args.gpu_ids)]
+    num_trained_episodes = 0
+
     torch.manual_seed(args.seed + rank)
     if gpu_id >= 0:
         torch.cuda.manual_seed(args.seed + rank)
@@ -61,6 +63,7 @@ def train(rank, args, shared_model, optimizer):
             player.eps_len += 1
             player.action_train()
             if player.done:
+                num_trained_episodes += 1
                 break
 
         if player.done:
@@ -135,6 +138,8 @@ def train(rank, args, shared_model, optimizer):
         player.clear_actions()
 
         if player.done:
+            #print(f' CPU {rank} -> train episode count is {num_trained_episodes}')
+
             if player.average_episode_length is None: # initial one
                 player.average_episode_length = player.eps_len
             else:
