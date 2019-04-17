@@ -34,7 +34,7 @@ def test(args, shared_model):
     reward_total_sum = 0
     player = Agent(None, env, args, None)
     player.gpu_id = gpu_id
-    player.model = A3C_CONV(args.stack_frames, player.env.action_space)
+    player.model = A3C_CONV(args.stack_frames, player.env.action_space, args.terminal_prediction, args.reward_prediction)
 
     player.state = player.env.reset()
     player.state = torch.from_numpy(player.state).float()
