@@ -4,7 +4,7 @@ import numpy as np
 import torch
 from environment import create_env
 from utils import setup_logger
-from model import A3C_CONV, A3C_MLP
+from model import A3C_CONV
 from player_util import Agent
 from torch.autograd import Variable
 import time
@@ -34,11 +34,7 @@ def test(args, shared_model):
     reward_total_sum = 0
     player = Agent(None, env, args, None)
     player.gpu_id = gpu_id
-    if args.model == 'MLP':
-        player.model = A3C_MLP(
-            player.env.observation_space.shape[0], player.env.action_space, args.stack_frames)
-    if args.model == 'CONV':
-        player.model = A3C_CONV(args.stack_frames, player.env.action_space)
+    player.model = A3C_CONV(args.stack_frames, player.env.action_space)
 
     player.state = player.env.reset()
     player.state = torch.from_numpy(player.state).float()

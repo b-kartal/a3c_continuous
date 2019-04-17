@@ -5,7 +5,7 @@ import argparse
 import torch
 from environment import create_env
 from utils import setup_logger
-from model import A3C_CONV, A3C_MLP
+from model import A3C_CONV
 from player_util import Agent
 from torch.autograd import Variable
 import gym
@@ -48,11 +48,6 @@ parser.add_argument(
     default=100000,
     metavar='M',
     help='maximum length of an episode (default: 100000)')
-parser.add_argument(
-    '--model',
-    default='MLP',
-    metavar='M',
-    help='Model type to use')
 parser.add_argument(
     '--stack-frames',
     type=int,
@@ -104,10 +99,8 @@ env = create_env("{}".format(args.env), args)
 num_tests = 0
 reward_total_sum = 0
 player = Agent(None, env, args, None)
-if args.model == 'MLP':
-    player.model = A3C_MLP(env.observation_space.shape[0], env.action_space, args.stack_frames)
-if args.model == 'CONV':
-    player.model = A3C_CONV(args.stack_frames, env.action_space)
+
+player.model = A3C_CONV(args.stack_frames, env.action_space)
 
 player.gpu_id = gpu_id
 if gpu_id >= 0:

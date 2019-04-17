@@ -5,7 +5,7 @@ import torch
 import torch.optim as optim
 from environment import create_env
 from utils import ensure_shared_grads
-from model import A3C_CONV, A3C_MLP
+from model import A3C_CONV
 from player_util import Agent
 from torch.autograd import Variable
 import gym
@@ -27,11 +27,7 @@ def train(rank, args, shared_model, optimizer):
     env.seed(args.seed + rank)
     player = Agent(None, env, args, None)
     player.gpu_id = gpu_id
-    if args.model == 'MLP':
-        player.model = A3C_MLP(
-            player.env.observation_space.shape[0], player.env.action_space, args.stack_frames)
-    if args.model == 'CONV':
-        player.model = A3C_CONV(args.stack_frames, player.env.action_space)
+    player.model = A3C_CONV(args.stack_frames, player.env.action_space)
 
     player.state = player.env.reset()
     player.state = torch.from_numpy(player.state).float()
@@ -80,8 +76,7 @@ def train(rank, args, shared_model, optimizer):
             R = torch.zeros(1, 1)
         if not player.done:
             state = player.state
-            if args.model == 'CONV':
-                state = state.unsqueeze(0)
+            state = state.unsqueeze(0)
             value, _, _, _ = player.model(
                 (Variable(state), (player.hx, player.cx)))
             R = value.data
