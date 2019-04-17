@@ -10,6 +10,9 @@ from player_util import Agent
 from torch.autograd import Variable
 import gym
 
+#from torchviz import make_dot
+
+
 
 def train(rank, args, shared_model, optimizer):
     ptitle('Training Agent: {}'.format(rank))
@@ -126,12 +129,14 @@ def train(rank, args, shared_model, optimizer):
         player.model.zero_grad()
 
         total_loss = policy_loss + 0.5 * value_loss + tp_weight*terminal_loss + 0.5*reward_pred_loss
-        total_loss.backward()
+
 
         # Visualize Computation Graph
         #graph = make_dot(total_loss)
         #from graphviz import Source
         #Source.view(graph)
+
+        total_loss.backward()
 
         ensure_shared_grads(player.model, shared_model, gpu=gpu_id >= 0)
         optimizer.step()
