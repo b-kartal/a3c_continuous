@@ -25,11 +25,16 @@ class Agent(object):
         self.reward = 0
         self.gpu_id = -1
 
+        # New Additions for Auxiliary Tasks
+        self.terminal_predictions = []
+        self.reward_predictions = []
+        self.average_episode_length = None # this will be used to approximate current episode length
+
+
     def action_train(self):
 
         self.state = self.state.unsqueeze(0)
-        value, mu, sigma, (self.hx, self.cx) = self.model(
-            (Variable(self.state), (self.hx, self.cx)))
+        value, mu, sigma, (self.hx, self.cx), terminal_prediction, reward_prediction = self.model((Variable(self.state), (self.hx, self.cx)))
         mu = torch.clamp(mu, -1.0, 1.0)
         sigma = F.softplus(sigma) + 1e-5
         eps = torch.randn(mu.size())
@@ -42,6 +47,12 @@ class Agent(object):
         else:
             eps = Variable(eps)
             pi = Variable(pi)
+
+        if terminal_prediction is not None:
+            self.terminal_predictions.append(terminal_prediction)
+
+        if reward_prediction is not None:
+            self.reward_predictions.append(reward_prediction) # does this need to be a Variable?
 
         action = (mu + sigma.sqrt() * eps).data
         act = Variable(action)
@@ -81,8 +92,7 @@ class Agent(object):
                 self.hx = Variable(self.hx.data)
 
             self.state = self.state.unsqueeze(0)
-            value, mu, sigma, (self.hx, self.cx) = self.model(
-                (Variable(self.state), (self.hx, self.cx)))
+            value, mu, sigma, (self.hx, self.cx), _, _ = self.model((Variable(self.state), (self.hx, self.cx)))
         mu = torch.clamp(mu.data, -1.0, 1.0)
         action = mu.cpu().numpy()[0]
         state, self.reward, self.done, self.info = self.env.step(action)
@@ -95,8 +105,12 @@ class Agent(object):
         return self
 
     def clear_actions(self):
+
         self.values = []
         self.log_probs = []
         self.rewards = []
         self.entropies = []
+        self.terminal_predictions = []
+        self.reward_predictions = []
+
         return self

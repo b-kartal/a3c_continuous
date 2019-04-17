@@ -20,6 +20,12 @@ parser.add_argument(
     metavar='LR',
     help='learning rate (default: 0.0001)')
 parser.add_argument(
+    '--tp',
+    type=float,
+    default=0.5,
+    metavar='TP',
+    help='terminal prediction aux loss weight (default: 0.5)')
+parser.add_argument(
     '--gamma',
     type=float,
     default=0.99,
@@ -37,6 +43,16 @@ parser.add_argument(
     default=1,
     metavar='S',
     help='random seed (default: 1)')
+parser.add_argument(
+    '--terminal-prediction',
+    action="store_true",
+    default=False,
+    help='Enable or Disable Terminal Prediction Auxiliary Task') # this is our novel addition to the general A3C
+parser.add_argument(
+    '--reward-prediction',
+    action="store_true",
+    default=False,
+    help='Enable or Disable Reward Prediction Auxiliary Task') # this is to compare UNREAL setting.
 parser.add_argument(
     '--workers',
     type=int,
@@ -130,7 +146,7 @@ if __name__ == '__main__':
         mp.set_start_method('spawn')
     env = create_env(args.env, args)
 
-    shared_model = A3C_CONV(args.stack_frames, env.action_space)
+    shared_model = A3C_CONV(args.stack_frames, env.action_space, args.terminal_prediction, args.reward_prediction)
 
     if args.load:
         saved_state = torch.load('{0}{1}.dat'.format(

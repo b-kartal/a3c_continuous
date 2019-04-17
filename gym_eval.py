@@ -100,7 +100,7 @@ num_tests = 0
 reward_total_sum = 0
 player = Agent(None, env, args, None)
 
-player.model = A3C_CONV(args.stack_frames, env.action_space)
+player.model = A3C_CONV(args.stack_frames, env.action_space, True, False)
 
 player.gpu_id = gpu_id
 if gpu_id >= 0:
