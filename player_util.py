@@ -30,7 +30,6 @@ class Agent(object):
         self.reward_predictions = []
         self.average_episode_length = None # this will be used to approximate current episode length
 
-
     def action_train(self):
 
         self.state = self.state.unsqueeze(0)
@@ -97,9 +96,11 @@ class Agent(object):
         action = mu.cpu().numpy()[0]
         state, self.reward, self.done, self.info = self.env.step(action)
         self.state = torch.from_numpy(state).float()
+
         if self.gpu_id >= 0:
             with torch.cuda.device(self.gpu_id):
                 self.state = self.state.cuda()
+
         self.eps_len += 1
         self.done = self.done or self.eps_len >= self.args.max_episode_length
         return self

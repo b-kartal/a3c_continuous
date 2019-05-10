@@ -79,7 +79,7 @@ class A3C_CONV(torch.nn.Module):
         if self.terminal_aux_head is None:
             terminal_prediction = None
         else:
-            terminal_prediction = torch.sigmoid(self.terminal_aux_head(x))
+            terminal_prediction = self.terminal_aux_head(x)
 
         if self.reward_aux_head is None:
             reward_prediction = None

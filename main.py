@@ -170,12 +170,13 @@ if __name__ == '__main__':
     p.start()
     processes.append(p)
     time.sleep(0.1)
+
     for rank in range(0, args.workers):
-        p = mp.Process(target=train, args=(
-            rank, args, shared_model, optimizer))
+        p = mp.Process(target=train, args=(rank, args, shared_model, optimizer))
         p.start()
         processes.append(p)
         time.sleep(0.1)
+
     for p in processes:
         time.sleep(0.1)
         p.join()

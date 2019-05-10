@@ -12,8 +12,9 @@ import logging
 import gym
 
 
+
 def test(args, shared_model):
-    ptitle('Test Agent')
+    ptitle('TestAgent')
     gpu_id = args.gpu_ids[-1]
     log = {}
     setup_logger('{}_log'.format(args.env),
