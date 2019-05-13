@@ -75,7 +75,6 @@ class A3C_CONV(torch.nn.Module):
         x = x.view(x.size(0), -1)
         hx, cx = self.lstm(x, (hx, cx))
         x = hx
-        
 
         if self.terminal_aux_head is None:
             terminal_prediction = None

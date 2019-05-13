@@ -9,11 +9,8 @@ from model import A3C_CONV
 from player_util import Agent
 from torch.autograd import Variable
 import gym
-import sys
-
 
 #from torchviz import make_dot
-
 
 
 def train(rank, args, shared_model, optimizer):
@@ -53,7 +50,7 @@ def train(rank, args, shared_model, optimizer):
         else:
             player.model.load_state_dict(shared_model.state_dict())
         if player.done:
-            sys._debugmallocstats()
+            #sys._debugmallocstats()
             if gpu_id >= 0:
                 with torch.cuda.device(gpu_id):
                     player.cx = Variable(torch.zeros(1, 128).cuda())
